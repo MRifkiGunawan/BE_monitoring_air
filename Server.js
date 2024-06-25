@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mqtt = require ('mqtt');
+var client  = mqtt.connect('mqtt://test.mosquitto.org');
 const db = require('./db');
 
 const app = express();
@@ -49,4 +51,25 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server berjalan pada http://localhost:${port}`);
+});
+
+client.on('connect', function () {
+  client.subscribe('12345678');
+  console.log('client has subscribed successfully');
+});
+
+client.on('message', function (topic, message){
+  console.log(message.toString()); //if toString is not given, the message comes as buffer
+  try {
+    const timestamp =  new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+    const query = 'INSERT INTO monitoring_air_mqtt (data, timestamp) VALUES (?, ?)';
+
+    db.query(query, [message.toString(),timestamp], (error, results, fields) => {
+      if (error) {
+        console.error('Error inserting data to MySQL:', error);
+      }
+    });
+  } catch (error) {
+    console.error('Error handling request:', error);
+  }
 });

@@ -39,7 +39,25 @@ db.connect((err) => {
         )
       `;
 
+      
+      // Membuat tabel monitoring_air jika belum ada
+      const createTableQueryMqtt = `
+        CREATE TABLE IF NOT EXISTS monitoring_air_mqtt (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          data VARCHAR(255) NOT NULL,
+          timestamp VARCHAR(255) NOT NULL
+        )
+      `;
+
       db.query(createTableQuery, (err) => {
+        if (err) {
+          console.error('Error creating table:', err);
+          return;
+        }
+        console.log('Table "monitoring_air" created or already exists.');
+      });
+      
+      db.query(createTableQueryMqtt, (err) => {
         if (err) {
           console.error('Error creating table:', err);
           return;
