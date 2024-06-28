@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
       }
 
-      res.status(200).json({ success: true, message: 'Data berhasil ditambahkan', result: results });
+      res.status(200).json({ success: true, message: 'Data berhasil ditambahkan', result: data });
     });
   } catch (error) {
     console.error('Error handling request:', error);
