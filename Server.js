@@ -20,9 +20,11 @@ app.get('/', (req, res) => {
       return res.status(400).json({ success: false, message: 'Data harus diisi' });
     }
 
-    const query = 'INSERT INTO monitoring_air (data, timestamp) VALUES (?, ?)';
+    console.log(data)
 
-    db.query(query, [data,timestamp], (error, results, fields) => {
+    const query = 'INSERT INTO monitoring_air (data, timestamp) VALUES ($1, $2)';
+
+    db.query(query, [data,timestamp], (error, results) => {
       if (error) {
         console.error('Error inserting data to MySQL:', error);
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -39,7 +41,7 @@ app.get('/', (req, res) => {
     app.get('/data', (req, res) => {
         const query = 'SELECT * FROM monitoring_air ORDER BY id DESC LIMIT 10';
       
-        db.query(query, (error, results, fields) => {
+        db.query(query, (error, results) => {
           if (error) {
             console.error('Error fetching data from MySQL:', error);
             return res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -62,9 +64,9 @@ client.on('message', function (topic, message){
   console.log(message.toString()); //if toString is not given, the message comes as buffer
   try {
     const timestamp =  new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
-    const query = 'INSERT INTO monitoring_air_mqtt (data, timestamp) VALUES (?, ?)';
+    const query = 'INSERT INTO monitoring_air_mqtt (data, timestamp) VALUES ($1, $2)';
 
-    db.query(query, [message.toString(),timestamp], (error, results, fields) => {
+    db.query(query, [message.toString(),timestamp], (error, results) => {
       if (error) {
         console.error('Error inserting data to MySQL:', error);
       }
