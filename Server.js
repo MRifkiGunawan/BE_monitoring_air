@@ -1,7 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mqtt = require ('mqtt');
-var client  = mqtt.connect('mqtt://test.mosquitto.org');
+//var client  = mqtt.connect('mqtt://test.mosquitto.org');
+var client = mqtt.connect({
+	host: '103.150.190.35',
+	port: 1883,
+	username: 'user',
+	password: '12344321'
+})
 const db = require('./db');
 
 const app = express();
