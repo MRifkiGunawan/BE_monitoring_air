@@ -73,6 +73,7 @@ client.on('message', function (topic, message){
     const query = 'INSERT INTO monitoring_air_mqtt (data, timestamp) VALUES ($1, $2)';
 
     db.query(query, [message.toString(),timestamp], (error, results) => {
+      res.status(200).json({ success: true, message: 'Data berhasil ditambahkan', result: data +";"+ timestamp});
       if (error) {
         console.error('Error inserting data to MySQL:', error);
       }
